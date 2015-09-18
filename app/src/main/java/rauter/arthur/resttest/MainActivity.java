@@ -4,13 +4,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    ArrayList<Commentary> comments;
+    private static final String URL = "http://jsonplaceholder.typicode.com/posts/6/comments";
+    TextView output;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        comments = new ArrayList<Commentary>();
+        //output = (TextView) findViewById(R.id.output);
+
+        new Verbindung(URL, comments).execute();
+
+
     }
 
     @Override
@@ -34,4 +47,5 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

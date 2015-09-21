@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
-    ArrayList<Commentary> comments;
+
     private static final String URL = "http://jsonplaceholder.typicode.com/posts/6/comments";
 
     class Verbindung extends AsyncTask<String, Void, String> {
@@ -30,7 +31,10 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            ArrayList<Commentary> comments = new ArrayList<>();
             parseJSON(s, comments);
+            TextView hello = (TextView) findViewById(R.id.hello);
+            hello.setText("I got all the way here!");
         }
 
         @Override
@@ -53,14 +57,12 @@ public class MainActivity extends Activity {
 
         public void parseJSON(String string, ArrayList<Commentary> comments) {
             try{
-                JSONObject json = new JSONObject(string);
-                JSONObject dataObject = json.getJSONObject("data");
-                JSONArray items = dataObject.getJSONArray("items");
+                JSONArray jsonArray = new JSONArray(string);
 
-                for(int i=0; i<items.length(); i++) {
-                    JSONObject commentObject = items.getJSONObject(i);
+                for(int i=0; i<jsonArray.length(); i++) {
+                    JSONObject commentObject = jsonArray.getJSONObject(i);
                     Commentary comment = new Commentary(
-                            commentObject.getString("postID"),
+                            commentObject.getString("postId"),
                             commentObject.getString("id"),
                             commentObject.getString("name"),
                             commentObject.getString("email"),
@@ -68,7 +70,9 @@ public class MainActivity extends Activity {
                     comments.add(comment);
                 }
             }
-            catch (JSONException e) {}
+            catch (JSONException e) {
+                Log.d("arthur", "JSON failed");
+            }
 
         }
 
@@ -79,12 +83,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        comments = new ArrayList<>();
-
-        new Verbindung().execute(URL);
-
-
-
+        Verbindung gettingData = (Verbindung) new Verbindung().execute(URL);
     }
 
     @Override
@@ -110,3 +109,47 @@ public class MainActivity extends Activity {
     }
 
 }
+
+/*
+* [
+  {
+    "postId": 6,
+    "id": 26,
+    "name": "in deleniti sunt provident soluta ratione veniam quam praesentium",
+    "email": "Russel.Parker@kameron.io",
+    "body": "incidunt sapiente eaque dolor eos\nad est molestias\nquas sit et nihil exercitationem at cumque ullam\nnihil magnam et"
+  },
+  {
+    "postId": 6,
+    "id": 27,
+    "name": "doloribus quibusdam molestiae amet illum",
+    "email": "Francesco.Gleason@nella.us",
+    "body": "nisi vel quas ut laborum ratione\nrerum magni eum\nunde et voluptatem saepe\nvoluptas corporis modi amet ipsam eos saepe porro"
+  },
+  {
+    "postId": 6,
+    "id": 28,
+    "name": "quo voluptates voluptas nisi veritatis dignissimos dolores ut officiis",
+    "email": "Ronny@rosina.org",
+    "body": "voluptatem repellendus quo alias at laudantium\nmollitia quidem esse\ntemporibus consequuntur vitae rerum illum\nid corporis sit id"
+  },
+  {
+    "postId": 6,
+    "id": 29,
+    "name": "eum distinctio amet dolor",
+    "email": "Jennings_Pouros@erica.biz",
+    "body": "tempora voluptatem est\nmagnam distinctio autem est dolorem\net ipsa molestiae odit rerum itaque corporis nihil nam\neaque rerum error"
+  },
+  {
+    "postId": 6,
+    "id": 30,
+    "name": "quasi nulla ducimus facilis non voluptas aut",
+    "email": "Lurline@marvin.biz",
+    "body": "consequuntur quia voluptate assumenda et\nautem voluptatem reiciendis ipsum animi est provident\nearum aperiam sapiente ad vitae iste\naccusantium aperiam eius qui dolore voluptatem et"
+  }
+]
+*
+*
+* */
+
+
